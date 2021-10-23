@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "edtvelizydiscord"
+version = "0.1.0"
+description = "A python script allowing to post automatically the changes of the schedule of the DUT Informatique of Velizy on Discord channels"
+authors = ["Yohann MARTIN <contact@codexus.fr>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.26.0"
+pydantic = "^1.8.2"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
