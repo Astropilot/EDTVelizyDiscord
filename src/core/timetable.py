@@ -3,10 +3,19 @@ import pathlib
 import xml.etree.ElementTree as ElementTree
 from datetime import datetime, timedelta, date
 from typing import List, Optional, Dict, Tuple
+from config import Settings
 
 from models.timetable import TimeTable, Week, Course
 from models.diff import CourseDiff, DiffType, ModifiedOnType
+from logger import get_logger
 
+logger = get_logger(__name__)
+
+REQUESTS_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:93.0) Gecko/20100101 Firefox/93.0',
+    'Accept-Encoding': '*',
+    'Connection': 'keep-alive'
+}
 
 def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
     root = ElementTree.fromstring(timetable_xml)
@@ -78,19 +87,34 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
     return TimeTable(group_name, week_list, courses)
 
 
-def get_remote_timetable(group_id: int) -> Tuple[Optional[TimeTable], str]:
-    response = requests.get(f'http://chronos.iut-velizy.uvsq.fr/EDT/g{group_id}.xml')
+def get_remote_timetable(group_id: int, settings: Settings) -> Tuple[Optional[TimeTable], Optional[str]]:
+    try:
+        response = requests.get(
+            f'{settings.edt_endpoint}g{group_id}.xml',
+            headers=REQUESTS_HEADERS,
+            timeout=settings.timeout
+        )
 
-    if response.status_code != 200:
-        return None
+        if response.status_code != 200:
+            logger.error(f'The EDT server responded with an incorrect status code: {response.status_code}')
+            return None, None
 
-    response.encoding = 'utf-8'
+        response.encoding = 'utf-8'
 
-    return convert_xml_to_timetable(response.text), response.text
+        return convert_xml_to_timetable(response.text), response.text
+    except requests.exceptions.ConnectionError:
+        logger.exception(f'The EDT server seems to be unreachable!')
+        return None, None
+    except requests.exceptions.Timeout:
+        logger.exception(f'The EDT server did not respond within the {settings.timeout}s!')
+        return None, None
+    except requests.exceptions.TooManyRedirects:
+        logger.exception(f'The EDT server started too many redirects!')
+        return None, None
 
 
-def get_local_timetable(group_id: int) -> Optional[TimeTable]:
-    local_file = pathlib.Path(f'storage/g{group_id}.xml')
+def get_local_timetable(group_id: int, settings: Settings) -> Optional[TimeTable]:
+    local_file = pathlib.Path(settings.storage_folder, f'g{group_id}.xml')
 
     if not local_file.exists():
         return None
@@ -100,8 +124,8 @@ def get_local_timetable(group_id: int) -> Optional[TimeTable]:
     return convert_xml_to_timetable(xml_timetable)
 
 
-def save_as_local_timetable(group_id: int, xml_timetable: str) -> None:
-    local_file = pathlib.Path(f'storage/g{group_id}.xml')
+def save_as_local_timetable(group_id: int, xml_timetable: str, settings: Settings) -> None:
+    local_file = pathlib.Path(settings.storage_folder, f'g{group_id}.xml')
 
     if local_file.exists():
         local_file.unlink()
