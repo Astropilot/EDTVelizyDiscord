@@ -25,14 +25,13 @@ def worder_update(group_id: int, webhook_url: str) -> None:
 
     courses_diff: Dict[date, List[CourseDiff]] = compare_two_timetables(edt_old, edt_current)
 
-    print(courses_diff)
-
     if len(courses_diff) == 0:
         return
 
     webhook = DiscordWebhook(url=webhook_url, rate_limit_retry=True)
-    embed = DiscordEmbed(title=f'Changement de l\'emploi du temps {edt_current.group_name}', color='12866584')
+    embed = DiscordEmbed(title=f'Changement de l\'emploi du temps {edt_current.group_name}')
 
+    embed.set_color(12866584)
     embed.set_url(f'http://chronos.iut-velizy.uvsq.fr/EDT/g{group_id}.html')
     embed.set_timestamp()
     embed.set_footer(text='Changement détecté le')
@@ -67,8 +66,6 @@ def worder_update(group_id: int, webhook_url: str) -> None:
             name=format_date(course_diff_date, 'EEEE dd MMMM yyyy', locale='fr'),
             value=f'```diff\n{diff_str}```'
         )
-
-    print(embed.__dict__)
 
     webhook.add_embed(embed)
     webhook.execute()

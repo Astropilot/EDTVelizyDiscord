@@ -1,6 +1,6 @@
 
-# Created by https://www.toptal.com/developers/gitignore/api/windows,linux,python
-# Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,python
+# Created by https://www.toptal.com/developers/gitignore/api/windows,linux,python,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,python,visualstudiocode
 
 ### Linux ###
 *~
@@ -183,6 +183,18 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/windows,linux,python
+### VisualStudioCode ###
+.vscode/*
+*.code-workspace
+
+# Local History for Visual Studio Code
+.history/
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+.ionide
+
+# End of https://www.toptal.com/developers/gitignore/api/windows,linux,python,visualstudiocode
 
 src/storage/*.xml
