@@ -9,6 +9,8 @@ license = "MIT"
 python = "^3.9"
 requests = "^2.26.0"
 pydantic = "^1.8.2"
+discord-webhook = "^0.14.0"
+Babel = "^2.9.1"
 
 [tool.poetry.dev-dependencies]
 
