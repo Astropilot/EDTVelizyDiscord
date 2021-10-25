@@ -4,6 +4,7 @@ from typing import List, Optional
 
 from .timetable import Course
 
+
 class DiffType(Enum):
     ADDED = 1
     REMOVED = 2

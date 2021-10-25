@@ -1,0 +1,7 @@
+{
+    "python.pythonPath": "C:\\Users\\Admin\\AppData\\Local\\pypoetry\\Cache\\virtualenvs\\edtvelizydiscord-2didyWDm-py3.9\\Scripts\\python.exe",
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true
+}

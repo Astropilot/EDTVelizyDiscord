@@ -13,6 +13,8 @@ discord-webhook = "^0.14.0"
 Babel = "^2.9.1"
 
 [tool.poetry.dev-dependencies]
+flake8 = "^4.0.1"
+black = {version = "^21.9b0", allow-prereleases = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
