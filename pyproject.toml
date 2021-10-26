@@ -3,6 +3,9 @@ name = "edtvelizydiscord"
 version = "0.1.0"
 description = "A python script allowing to post automatically the changes of the schedule of the DUT Informatique of Velizy on Discord channels"
 authors = ["Yohann MARTIN <contact@codexus.fr>"]
+readme = "README.md"
+homepage = "https://github.com/Astropilot/EDTVelizyDiscord"
+repository = "https://github.com/Astropilot/EDTVelizyDiscord"
 license = "MIT"
 
 [tool.poetry.dependencies]
@@ -15,7 +18,54 @@ Babel = "^2.9.1"
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
 black = {version = "^21.9b0", allow-prereleases = true}
+pytest = "^6.2.5"
+coverage = {extras = ["toml"], version = "^6.0.2"}
+isort = "^5.9.3"
+mypy = "^0.910"
+types-requests = "^2.25.11"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+parallel = true
+source = [
+    "tests",
+    "edtvelizydiscord"
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "@overload",
+    'if __name__ == "__main__":',
+    "if TYPE_CHECKING:",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.mypy]
+# --strict
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+implicit_reexport = false
+strict_equality = true
+# --strict end
+
+[[tool.mypy.overrides]]
+module = [
+    "discord_webhook.webhook",
+    "babel.dates"
+]
+ignore_missing_imports = true

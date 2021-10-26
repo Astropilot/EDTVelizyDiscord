@@ -4,20 +4,18 @@
 </h1>
 
 <p align="center">
-  <a href="https://github.com/Astropilot/EDTVelizyDiscord/actions">
-    <img src="https://github.com/Astropilot/EDTVelizyDiscord/workflows/Build%20%26%20Publish%20Docker%20Image/badge.svg"
-         alt="Build Status">
+  <a href="https://github.com/Astropilot/EDTVelizyDiscord/actions?query=workflow%3ATest">
+    <img src="https://github.com/Astropilot/EDTVelizyDiscord/workflows/Test/badge.svg"
+         alt="Test">
   </a>
-  <img src="https://img.shields.io/badge/python-3.9-brightgreen">
-  <img src="https://img.shields.io/github/v/tag/Astropilot/EDTVelizyDiscord">
-  <a href="https://github.com/Astropilot/EDTVelizyDiscord/issues">
-    <img src="https://img.shields.io/github/issues/Astropilot/EDTVelizyDiscord"
-         alt="Issues">
+  <a href="https://github.com/Astropilot/EDTVelizyDiscord/actions?query=workflow%3APublish">
+    <img src="https://github.com/Astropilot/EDTVelizyDiscord/workflows/Publish/badge.svg"
+         alt="Publish">
   </a>
-  <a href="https://github.com/Astropilot/EDTVelizyDiscord/pulls">
-    <img src="https://img.shields.io/github/issues-pr-raw/Astropilot/EDTVelizyDiscord"
-         alt="Issues">
-  </a>
+  <a href="https://codecov.io/gh/Astropilot/EDTVelizyDiscord" target="_blank">
+    <img src="https://img.shields.io/codecov/c/github/Astropilot/EDTVelizyDiscord?color=%2334D058" alt="Coverage">
+</a>
+  <img src="https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-brightgreen">
   <a href="https://github.com/Astropilot/EDTVelizyDiscord/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/Astropilot/EDTVelizyDiscord"
          alt="MIT License">

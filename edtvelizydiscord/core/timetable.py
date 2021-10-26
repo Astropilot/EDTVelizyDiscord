@@ -1,13 +1,13 @@
-import requests
 import pathlib
 import xml.etree.ElementTree as ElementTree
-from datetime import datetime, timedelta, date
-from typing import List, Optional, Dict, Tuple
-from config import Settings
+from datetime import date, datetime, timedelta
+from typing import Dict, List, Optional, Tuple
 
-from models.timetable import TimeTable, Week, Course
-from models.diff import CourseDiff, DiffType, ModifiedOnType
+import requests
+from config import Settings
 from logger import get_logger
+from models.diff import CourseDiff, DiffType, ModifiedOnType
+from models.timetable import Course, TimeTable, Week
 
 logger = get_logger(__name__)
 
@@ -28,12 +28,12 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
     course_nodes: List[ElementTree.Element] = root.findall("event")
     options_node = root.find("option")
 
-    if len(week_nodes) == 0 or options_node is None:
+    if len(week_nodes) == 0 or not options_node:
         return None
 
     subheading_node = options_node.find("subheading")
 
-    if subheading_node is None:
+    if not subheading_node or not subheading_node.text:
         return None
 
     group_name: str = subheading_node.text.replace("Emploi du temps Groupe - ", "")
@@ -42,7 +42,7 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
         week_date_node = week_node.get("date")
         week_rawix_node = week_node.get("rawix")
 
-        if week_date_node is None or week_rawix_node is None:
+        if not week_date_node or not week_rawix_node:
             return None
 
         week_date: datetime = datetime.strptime(week_date_node, "%d/%m/%Y")
@@ -51,10 +51,21 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
         weeks[week_index] = Week(week_date, week_index)
 
     for course_node in course_nodes:
-        week_index: int = course_node.find("rawweeks").text.index("Y") + 1
-        week: Week = weeks.get(week_index)
-        day: int = int(course_node.find("day").text)
-        times: str = course_node.get("timesort")
+        rawweeks_element = course_node.find("rawweeks")
+        day_element = course_node.find("day")
+
+        if not rawweeks_element or not rawweeks_element.text:
+            return None
+        if not day_element or not day_element.text:
+            return None
+
+        week_index: int = rawweeks_element.text.index("Y") + 1  # type: ignore [no-redef]
+        week: Optional[Week] = weeks.get(week_index)
+        day: int = int(day_element.text)
+        times: Optional[str] = course_node.get("timesort")
+
+        if not week or not times:
+            return None
 
         start_date: datetime = week.week_date + timedelta(days=day)
         end_date: datetime = week.week_date + timedelta(days=day)
@@ -67,16 +78,30 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
 
         resources = course_node.find("resources")
 
+        if not resources:
+            return None
+
         module_element = resources.find("module")
         staff_element = resources.find("staff")
         room_element = resources.find("room")
 
-        if module_element is not None:
-            module = module_element.find("item").text
-        if staff_element is not None:
-            staff = staff_element.find("item").text
-        if room_element is not None:
-            room = room_element.find("item").text
+        if module_element:
+            module_item = module_element.find("item")
+
+            if module_item and module_item.text:
+                module = module_item.text
+
+        if staff_element:
+            staff_item = staff_element.find("item")
+
+            if staff_item and staff_item.text:
+                staff = staff_item.text
+
+        if room_element:
+            room_item = room_element.find("item")
+
+            if room_item and room_item.text:
+                room = room_item.text
 
         courses.append(Course(week, start_date, end_date, module, staff, room))
 

@@ -1,12 +1,12 @@
-import requests
 from datetime import date
 from typing import Dict, List
-from discord_webhook.webhook import DiscordWebhook, DiscordEmbed
+
+import requests
 from babel.dates import format_date
 from config import Settings
-
-from models.diff import CourseDiff, DiffType, ModifiedOnType
+from discord_webhook.webhook import DiscordEmbed, DiscordWebhook
 from logger import get_logger
+from models.diff import CourseDiff, DiffType, ModifiedOnType
 
 logger = get_logger(__name__)
 
@@ -44,7 +44,11 @@ def send_diff_to_webhook(
                 diff_str += f"+ {course_diff.course.module} ({course_diff.course.pretty_times})\n"
             elif course_diff.type == DiffType.REMOVED:
                 diff_str += f"- {course_diff.course.module} ({course_diff.course.pretty_times})\n"
-            elif course_diff.type == DiffType.UPDATED:
+            elif (
+                course_diff.type == DiffType.UPDATED
+                and course_diff.modified_on
+                and course_diff.compare_to
+            ):
                 diff_str += f"! {course_diff.course.module} ({course_diff.course.pretty_times}):\n"
 
                 if ModifiedOnType.MODULE in course_diff.modified_on:
