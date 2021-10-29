@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "edtvelizydiscord"
-version = "0.1.0"
+version = "0.1.0b"
 description = "A python script allowing to post automatically the changes of the schedule of the DUT Informatique of Velizy on Discord channels"
 authors = ["Yohann MARTIN <contact@codexus.fr>"]
 readme = "README.md"
@@ -14,6 +14,7 @@ requests = "^2.26.0"
 pydantic = "^1.8.2"
 discord-webhook = "^0.14.0"
 Babel = "^2.9.1"
+colorlog = "^6.5.0"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"

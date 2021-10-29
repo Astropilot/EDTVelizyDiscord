@@ -4,14 +4,8 @@ from typing import List
 
 
 @dataclass(frozen=True)
-class Week:
-    week_date: datetime
-    index: int
-
-
-@dataclass(frozen=True)
 class Course:
-    week: Week
+    week_date: datetime
     start_date: datetime
     end_date: datetime
     module: str
@@ -28,5 +22,5 @@ class Course:
 @dataclass(frozen=True)
 class TimeTable:
     group_name: str
-    weeks: List[Week]
+    weeks: List[datetime]
     courses: List[Course]

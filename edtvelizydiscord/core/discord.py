@@ -46,17 +46,17 @@ def send_diff_to_webhook(
                 diff_str += f"- {course_diff.course.module} ({course_diff.course.pretty_times})\n"
             elif (
                 course_diff.type == DiffType.UPDATED
-                and course_diff.modified_on
-                and course_diff.compare_to
+                and course_diff.modified_on is not None
+                and course_diff.compare_to is not None
             ):
                 diff_str += f"! {course_diff.course.module} ({course_diff.course.pretty_times}):\n"
 
                 if ModifiedOnType.MODULE in course_diff.modified_on:
-                    diff_str += f'\tChangement du module: "{course_diff.course.module}" -> "{course_diff.compare_to.module}"\n'  # noqa
+                    diff_str += f"\tChangement du module: {course_diff.course.module} -> {course_diff.compare_to.module}\n"  # noqa
                 if ModifiedOnType.STAFF in course_diff.modified_on:
-                    diff_str += f'\tChangement du professeur: "{course_diff.course.staff}" -> "{course_diff.compare_to.staff}"\n'  # noqa
+                    diff_str += f"\tChangement du professeur: {course_diff.course.staff} -> {course_diff.compare_to.staff}\n"  # noqa
                 if ModifiedOnType.ROOM in course_diff.modified_on:
-                    diff_str += f'\tChangement de la salle: "{course_diff.course.room}" -> "{course_diff.compare_to.room}"\n'  # noqa
+                    diff_str += f"\tChangement de la salle: {course_diff.course.room} -> {course_diff.compare_to.room}\n"  # noqa
 
         embed.add_embed_field(
             name=format_date(course_diff_date, "EEEE dd MMMM yyyy", locale="fr"),

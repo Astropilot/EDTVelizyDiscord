@@ -1,13 +1,13 @@
-import pathlib
 import xml.etree.ElementTree as ElementTree
 from datetime import date, datetime, timedelta
+from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 import requests
 from config import Settings
 from logger import get_logger
 from models.diff import CourseDiff, DiffType, ModifiedOnType
-from models.timetable import Course, TimeTable, Week
+from models.timetable import Course, TimeTable
 
 logger = get_logger(__name__)
 
@@ -21,19 +21,19 @@ REQUESTS_HEADERS = {
 def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
     root = ElementTree.fromstring(timetable_xml)
 
-    weeks: Dict[int, Week] = {}
+    weeks: Dict[int, datetime] = {}
     courses: List[Course] = []
 
     week_nodes: List[ElementTree.Element] = root.findall("span")
     course_nodes: List[ElementTree.Element] = root.findall("event")
     options_node = root.find("option")
 
-    if len(week_nodes) == 0 or not options_node:
+    if len(week_nodes) == 0 or options_node is None:
         return None
 
     subheading_node = options_node.find("subheading")
 
-    if not subheading_node or not subheading_node.text:
+    if subheading_node is None or subheading_node.text is None:
         return None
 
     group_name: str = subheading_node.text.replace("Emploi du temps Groupe - ", "")
@@ -42,33 +42,33 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
         week_date_node = week_node.get("date")
         week_rawix_node = week_node.get("rawix")
 
-        if not week_date_node or not week_rawix_node:
+        if week_date_node is None or week_rawix_node is None:
             return None
 
         week_date: datetime = datetime.strptime(week_date_node, "%d/%m/%Y")
         week_index: int = int(week_rawix_node)
 
-        weeks[week_index] = Week(week_date, week_index)
+        weeks[week_index] = week_date
 
     for course_node in course_nodes:
         rawweeks_element = course_node.find("rawweeks")
         day_element = course_node.find("day")
 
-        if not rawweeks_element or not rawweeks_element.text:
+        if rawweeks_element is None or rawweeks_element.text is None:
             return None
-        if not day_element or not day_element.text:
+        if day_element is None or day_element.text is None:
             return None
 
         week_index: int = rawweeks_element.text.index("Y") + 1  # type: ignore [no-redef]
-        week: Optional[Week] = weeks.get(week_index)
+        week_date: Optional[datetime] = weeks.get(week_index)  # type: ignore [no-redef]
         day: int = int(day_element.text)
         times: Optional[str] = course_node.get("timesort")
 
-        if not week or not times:
+        if week_date is None or times is None:
             return None
 
-        start_date: datetime = week.week_date + timedelta(days=day)
-        end_date: datetime = week.week_date + timedelta(days=day)
+        start_date: datetime = week_date + timedelta(days=day)
+        end_date: datetime = week_date + timedelta(days=day)
         module: str = "[Cours sans nom]"
         staff: str = ""
         room: str = ""
@@ -78,36 +78,36 @@ def convert_xml_to_timetable(timetable_xml: str) -> Optional[TimeTable]:
 
         resources = course_node.find("resources")
 
-        if not resources:
+        if resources is None:
             return None
 
         module_element = resources.find("module")
         staff_element = resources.find("staff")
         room_element = resources.find("room")
 
-        if module_element:
+        if module_element is not None:
             module_item = module_element.find("item")
 
-            if module_item and module_item.text:
+            if module_item is not None and module_item.text is not None:
                 module = module_item.text
 
-        if staff_element:
+        if staff_element is not None:
             staff_item = staff_element.find("item")
 
-            if staff_item and staff_item.text:
+            if staff_item is not None and staff_item.text is not None:
                 staff = staff_item.text
 
-        if room_element:
+        if room_element is not None:
             room_item = room_element.find("item")
 
-            if room_item and room_item.text:
+            if room_item is not None and room_item.text is not None:
                 room = room_item.text
 
-        courses.append(Course(week, start_date, end_date, module, staff, room))
+        courses.append(Course(week_date, start_date, end_date, module, staff, room))
 
-    week_list: List[Week] = list(weeks.values())
+    week_list: List[datetime] = list(weeks.values())
 
-    week_list.sort(key=lambda x: x.week_date)
+    week_list.sort()
     courses.sort(key=lambda x: x.start_date)
 
     return TimeTable(group_name, week_list, courses)
@@ -146,7 +146,7 @@ def get_remote_timetable(
 
 
 def get_local_timetable(group_id: int, settings: Settings) -> Optional[TimeTable]:
-    local_file = pathlib.Path(settings.storage_folder, f"g{group_id}.xml")
+    local_file = Path(settings.storage_folder, f"g{group_id}.xml")
 
     if not local_file.exists():
         return None
@@ -159,7 +159,7 @@ def get_local_timetable(group_id: int, settings: Settings) -> Optional[TimeTable
 def save_as_local_timetable(
     group_id: int, xml_timetable: str, settings: Settings
 ) -> None:
-    local_file = pathlib.Path(settings.storage_folder, f"g{group_id}.xml")
+    local_file = Path(settings.storage_folder, f"g{group_id}.xml")
 
     if local_file.exists():
         local_file.unlink()
@@ -172,26 +172,26 @@ def compare_two_timetables(
 ) -> Dict[date, List[CourseDiff]]:
     courses_diff: Dict[date, List[CourseDiff]] = {}
 
-    last_week_edt_old = edt_old.weeks[-1]
-    last_week_edt_current = edt_current.weeks[-1]
-
-    # We going to ignore if occur the week present in the old EDT but not in the new
-    # and same for the one added in the new EDT but not present in the old
+    # We going to ignore if occur the weeks present in the old EDT but not in the new
+    # and same for the ones added in the new EDT but not present in the old
     # or else we going to have a lot of deletion and addition courses that are not relevant
-    week_dates_to_ignore: List[datetime] = []
+    week_dates_in_common: List[datetime] = []
 
-    if last_week_edt_old.week_date < last_week_edt_current.week_date:
-        week_dates_to_ignore.append(edt_old.weeks[0].week_date)
-        week_dates_to_ignore.append(last_week_edt_current.week_date)
+    for week_old in edt_old.weeks:
+        if week_old in edt_current.weeks:
+            week_dates_in_common.append(week_old)
 
     # Checking removed courses (present in the old EDT but not in the new)
     for course_old in edt_old.courses:
-        if course_old.week.week_date in week_dates_to_ignore:
+        if course_old.week_date not in week_dates_in_common:
             continue
 
         found = False
         for course_current in edt_current.courses:
-            if course_old == course_current:
+            if (
+                course_old.start_date == course_current.start_date
+                and course_old.end_date == course_current.end_date
+            ):
                 found = True
 
         if not found:
@@ -201,12 +201,15 @@ def compare_two_timetables(
 
     # Checking added courses (present in the current EDT but not in the old)
     for course_current in edt_current.courses:
-        if course_current.week.week_date in week_dates_to_ignore:
+        if course_current.week_date not in week_dates_in_common:
             continue
 
         found = False
         for course_old in edt_old.courses:
-            if course_current == course_old:
+            if (
+                course_current.start_date == course_old.start_date
+                and course_current.end_date == course_old.end_date
+            ):
                 found = True
 
         if not found:
@@ -216,7 +219,7 @@ def compare_two_timetables(
 
     # Checking modified courses (same time but either different module name, staff or room)
     for course_old in edt_old.courses:
-        if course_old.week.week_date in week_dates_to_ignore:
+        if course_old.week_date not in week_dates_in_common:
             continue
 
         for course_current in edt_current.courses:

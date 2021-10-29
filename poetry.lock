@@ -94,9 +94,23 @@ importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[[package]]
+name = "colorlog"
+version = "6.5.0"
+description = "Add colours to the output of Python's logging module."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+colorama = {version = "*", markers = "sys_platform == \"win32\""}
+
+[package.extras]
+development = ["black", "flake8", "mypy", "pytest", "types-colorama"]
 
 [[package]]
 name = "coverage"
@@ -437,7 +451,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytes
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "1b89ca2cdc351d7b57bd1aed8f0ead3287d7bc8ed301143936d17ee11e3b943f"
+content-hash = "e42cda8c6eaf2fc3ea2875b4237c1a0e1f8d48f0d975e7d7f0343c60d01cfe07"
 
 [metadata.files]
 atomicwrites = [
@@ -471,6 +485,10 @@ click = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+colorlog = [
+    {file = "colorlog-6.5.0-py2.py3-none-any.whl", hash = "sha256:d334b1b8dae5989b786232f05586a7a0111feb24ff9cfc8310c3347a91388717"},
+    {file = "colorlog-6.5.0.tar.gz", hash = "sha256:cf62a8e389d5660d0d22be17937b25b9abef9497ddc940197d1773aa1f604339"},
 ]
 coverage = [
     {file = "coverage-6.0.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:1549e1d08ce38259de2bc3e9a0d5f3642ff4a8f500ffc1b2df73fd621a6cdfc0"},

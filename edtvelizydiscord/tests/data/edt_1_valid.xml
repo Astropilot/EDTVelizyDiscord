@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="gridttss.xsl"?>
+
+<timetable>
+    <option combined="0" totalweeks="0" showemptydays="1" dayclass="reverse" titles="1" timesConditional="1">
+        <subheading>Emploi du temps Groupe - INF1-A1</subheading>
+    </option>
+    <property />
+    <period id="0" col="4" times="08:00 - 09:00" />
+    <period id="1" col="8" times="09:00 - 10:00" />
+    <period id="2" col="12" times="10:00 - 11:00" />
+    <period id="3" col="16" times="11:00 - 12:00" />
+    <period id="4" col="20" times="12:00 - 13:00" />
+    <period id="5" col="24" times="13:00 - 14:00" />
+    <period id="6" col="28" times="14:00 - 15:00" />
+    <period id="7" col="32" times="15:00 - 16:00" />
+    <period id="8" col="36" times="16:00 - 17:00" />
+    <period id="9" col="40" times="17:00 - 18:00" />
+    <period id="10" col="44" times="18:00 - 19:00" />
+    <span id="0" date="18/10/2021" rawix="9" rawlen="1">
+        <description>Semaine 42, Semaine commençant le 18/10/2021</description>
+        <title>42</title>
+        <alleventweeks>NNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</alleventweeks>
+        <day id="0">
+            <name>lundi</name>
+            <row id="0" />
+        </day>
+        <day id="1">
+            <name>mardi</name>
+            <row id="0" />
+        </day>
+        <day id="2">
+            <name>mercredi</name>
+            <row id="0" />
+            <row id="1" />
+        </day>
+        <day id="3">
+            <name>jeudi</name>
+            <row id="0" />
+        </day>
+        <day id="4">
+            <name>vendredi</name>
+            <row id="0" />
+        </day>
+    </span>
+    <span id="1" date="25/10/2021" rawix="10" rawlen="1">
+        <description>Semaine 43, Semaine commençant le 25/10/2021</description>
+        <title>43</title>
+        <alleventweeks>NNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</alleventweeks>
+        <day id="0">
+            <name>lundi</name>
+            <row id="0" />
+        </day>
+        <day id="1">
+            <name>mardi</name>
+            <row id="0" />
+        </day>
+        <day id="2">
+            <name>mercredi</name>
+            <row id="0" />
+            <row id="1" />
+        </day>
+        <day id="3">
+            <name>jeudi</name>
+            <row id="0" />
+        </day>
+        <day id="4">
+            <name>vendredi</name>
+            <row id="0" />
+        </day>
+    </span>
+    <event id="197443" timesort="08001030" colour="BF7FFF" ecs="6" ecc="8" er="0" sca="2">
+        <day>0</day>
+        <prettytimes>08:00-10:30</prettytimes>
+        <starttime>08:00</starttime>
+        <endtime>10:30</endtime>
+        <prettyweeks></prettyweeks>
+        <rawweeks>NNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</rawweeks>
+        <resources>
+            <group title="Groupe">
+                <item>INF1-A</item>
+            </group>
+            <module title="Matière">
+                <item>Dev. interfaces web</item>
+            </module>
+            <staff title="Personnel">
+                <item>Jean Dupont</item>
+            </staff>
+        </resources>
+    </event>
+    <event id="197339" timesort="09001030" colour="DFDFDF" ecs="8" ecc="6" er="0" cellshare="1">
+        <day>1</day>
+        <prettytimes>09:00-10:30 </prettytimes>
+        <starttime>09:00</starttime>
+        <endtime>10:30</endtime>
+        <prettyweeks></prettyweeks>
+        <rawweeks>NNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</rawweeks>
+        <resources>
+            <group title="Groupe">
+                <item>INF1-A</item>
+            </group>
+            <module title="Matière">
+                <item>Création BD</item>
+            </module>
+            <room title="Salle">
+                <item>G22</item>
+            </room>
+        </resources>
+    </event>
+    <event id="197339" timesort="16151730" colour="DFDFDF" ecs="8" ecc="6" er="0" cellshare="1">
+        <day>2</day>
+        <prettytimes>16:15-17:30 </prettytimes>
+        <starttime>16:15</starttime>
+        <endtime>17:30</endtime>
+        <prettyweeks></prettyweeks>
+        <rawweeks>NNNNNNNNNYNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN</rawweeks>
+        <resources>
+            <group title="Groupe">
+                <item>INF1-A</item>
+            </group>
+        </resources>
+    </event>
+</timetable>
